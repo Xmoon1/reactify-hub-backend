@@ -4,6 +4,8 @@ package com.blogbackend.controller;
 import com.blogbackend.dto.UserDTO;
 import com.blogbackend.exceptions.PersonDoNotCreatedException;
 import com.blogbackend.model.User;
+import com.blogbackend.model.token.Token;
+import com.blogbackend.repository.TokenRepository;
 import com.blogbackend.service.AvatarService;
 import com.blogbackend.service.UserService;
 
@@ -13,12 +15,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.token.TokenService;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,6 +32,7 @@ public class PeopleController {
 
     private final UserService service;
     private final AvatarService avatarService;
+    private final TokenRepository tokenRepository;
 
 
     @GetMapping()
@@ -92,7 +97,10 @@ public class PeopleController {
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable int id){
+    public ResponseEntity<?> deleteUser(@PathVariable int id) throws NotFoundException {
+//        Optional<Token> foundedToken = tokenRepository.findById();
+//        assert foundedToken.orElse(null) != null;
+        tokenRepository.delete(service.findOneUser(id).getTokens().get(0));
         service.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Person deleted successfully");
     }
@@ -107,4 +115,5 @@ public class PeopleController {
         return modelMapper.map(person, UserDTO.class); // From Person to PersonDTO
 
     }
+
 }

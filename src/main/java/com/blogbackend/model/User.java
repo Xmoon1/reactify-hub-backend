@@ -7,10 +7,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,11 +17,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "user")
 public class User implements UserDetails {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
   private String firstname;
   private String lastname;
@@ -34,16 +32,22 @@ public class User implements UserDetails {
   @JoinColumn(name = "avatar_id")
   private AvatarData avatar;
 
-//  @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-//  private List<Post> post;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<Post> post;
 
   private LocalDateTime dateOfCreated;
 
   @Enumerated(EnumType.STRING)
   private Role role;
 
+  @Getter
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
+
+
+  public void setTokens(List<Token> tokens) {
+    this.tokens = tokens;
+  }
 
   @PrePersist
   private void init(){

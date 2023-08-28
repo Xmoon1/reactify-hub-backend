@@ -1,6 +1,7 @@
 package com.blogbackend.service;
 
 import com.blogbackend.model.User;
+import com.blogbackend.model.enums.Role;
 import com.blogbackend.model.token.Token;
 import com.blogbackend.model.token.TokenType;
 import com.blogbackend.repository.TokenRepository;
@@ -35,7 +36,7 @@ public class AuthenticationService {
         .lastname(request.getLastname())
         .email(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
-        .role(request.getRole())
+        .role(Role.USER)
         .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);

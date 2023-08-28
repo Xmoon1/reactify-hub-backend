@@ -32,9 +32,9 @@ public class Post {
     @Column(name = "views_count")
     private int viewsCount=0;
 
-//    @ManyToOne
-//    @JoinColumn(name="user_id", nullable=false)
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
+    private User user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Image> images;
